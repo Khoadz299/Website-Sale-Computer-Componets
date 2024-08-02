@@ -3,8 +3,8 @@ import configDB  from '../../database/config'
 const sequelize = configDB
 
 export default class Account extends Model {
-  declare id: number;
-  declare username: string;
+  declare readonly id: number;
+  declare readonly username: string;
   declare password: string;
   declare role: string;
 }

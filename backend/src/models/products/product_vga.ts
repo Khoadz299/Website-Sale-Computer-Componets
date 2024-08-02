@@ -1,9 +1,9 @@
 import { Model, DataTypes } from 'sequelize';
-import configDB  from '../../database/config' 
+import configDB  from '../../../database/config' 
 const sequelize = configDB
 
 export default class Product_VGA extends Model {
-  declare id: number;
+  declare id: string;
   declare name: string;
   declare brand: string;
   declare memory: string;
@@ -16,8 +16,7 @@ export default class Product_VGA extends Model {
 Product_VGA.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.STRING(50),
       primaryKey: true,
     },
     name: {
@@ -58,3 +57,5 @@ Product_VGA.init(
     timestamps : false
   },
 );
+
+

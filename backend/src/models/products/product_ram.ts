@@ -1,16 +1,14 @@
 import { Model, DataTypes } from 'sequelize';
-import configDB  from '../../database/config' 
+import configDB  from '../../../database/config' 
 const sequelize = configDB
 
 export default class Product_RAM extends Model {
-  declare id: number;
+  declare id: string;
   declare name: string;
   declare brand: string;
-  declare resolution : string;
-  declare screen_size: string;
-  declare panel_type: string;
-  declare refresh_rate: string;
-  declare response_time: string;
+  declare capacity: string;
+  declare bus_speed: string;
+  declare model: string;
   declare quantity: number;
   declare price: number;
 }
@@ -18,8 +16,7 @@ export default class Product_RAM extends Model {
 Product_RAM.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.STRING(50),
       primaryKey: true,
     },
     name: {
@@ -31,26 +28,18 @@ Product_RAM.init(
       type: new DataTypes.STRING(100),
       allowNull: false,
     },
-    resolution: {
+    capacity: {
         type: new DataTypes.STRING(50),
         allowNull: false,
     },
-    screen_size: {
+    bus_speed: {
         type: new DataTypes.STRING(50),
         allowNull: false,
     },
-    panel_type: {
-        type: new DataTypes.STRING(50),
+    model: {
+        type: new DataTypes.STRING(100),
         allowNull: false,
     },
-    refresh_rate: {
-      type: new DataTypes.STRING(50),
-      allowNull: false,
-  },
-    response_time: {
-      type: new DataTypes.STRING(50),
-      allowNull: false,
-  },
     quantity: {
         type: new DataTypes.INTEGER,
         allowNull: false,
@@ -63,7 +52,7 @@ Product_RAM.init(
     },
   },
   {
-    tableName: 'product_monitor',
+    tableName: 'product_ram',
     sequelize, // passing the `sequelize` instance is required
     timestamps : false
   },

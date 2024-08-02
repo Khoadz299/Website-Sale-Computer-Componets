@@ -1,9 +1,9 @@
 import { Model, DataTypes } from 'sequelize';
-import configDB  from '../../database/config' 
+import configDB  from '../../../database/config' 
 const sequelize = configDB
 
 export default class Product_STORAGE extends Model {
-  declare id: number;
+  declare id: string;
   declare name: string;
   declare brand: string;
   declare type: string;
@@ -15,8 +15,7 @@ export default class Product_STORAGE extends Model {
 Product_STORAGE.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.STRING(50),
       primaryKey: true,
     },
     name: {

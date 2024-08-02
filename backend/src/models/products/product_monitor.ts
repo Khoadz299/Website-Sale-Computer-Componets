@@ -1,22 +1,24 @@
 import { Model, DataTypes } from 'sequelize';
-import configDB  from '../../database/config' 
+import configDB  from '../../../database/config' 
 const sequelize = configDB
 
-export default class Product_CPU extends Model {
-  declare id: number;
+export default class Product_MONITOR extends Model {
+  declare id: string;
   declare name: string;
   declare brand: string;
-  declare socket: string;
-  declare model: string;
+  declare resolution : string;
+  declare screen_size: string;
+  declare panel_type: string;
+  declare refresh_rate: string;
+  declare response_time: string;
   declare quantity: number;
   declare price: number;
 }
 
-Product_CPU.init(
+Product_MONITOR.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.STRING(50),
       primaryKey: true,
     },
     name: {
@@ -28,14 +30,26 @@ Product_CPU.init(
       type: new DataTypes.STRING(100),
       allowNull: false,
     },
-    socket: {
-        type: new DataTypes.STRING(100),
+    resolution: {
+        type: new DataTypes.STRING(50),
         allowNull: false,
     },
-    model: {
-        type: new DataTypes.STRING(100),
+    screen_size: {
+        type: new DataTypes.STRING(50),
         allowNull: false,
     },
+    panel_type: {
+        type: new DataTypes.STRING(50),
+        allowNull: false,
+    },
+    refresh_rate: {
+      type: new DataTypes.STRING(50),
+      allowNull: false,
+  },
+    response_time: {
+      type: new DataTypes.STRING(50),
+      allowNull: false,
+  },
     quantity: {
         type: new DataTypes.INTEGER,
         allowNull: false,
@@ -48,7 +62,7 @@ Product_CPU.init(
     },
   },
   {
-    tableName: 'product_cpu',
+    tableName: 'product_monitor',
     sequelize, // passing the `sequelize` instance is required
     timestamps : false
   },

@@ -5,8 +5,7 @@ const sequelize = configDB;
 export default class BillDetail extends Model {
   declare id: number;
   declare bill_info_id: number;
-  declare product_id: number;
-  declare product_type: string;
+  declare product_id: string;
   declare quantity: number;
   declare price: number;
 }
@@ -23,15 +22,8 @@ BillDetail.init(
       allowNull: false,
     },
     product_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    product_type: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      validate: {
-        isIn: [['CPU', 'VGA', 'MONITOR', 'RAM', 'PSU', 'STORAGE']],
-      },
     },
     quantity: {
       type: DataTypes.INTEGER,
