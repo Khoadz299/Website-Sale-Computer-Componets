@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize';
 
-let database : string = 'ShopSaleComputer'
+let database : string = 'ShopSaleComponentsComputer'
 let username : string = 'postgres'
 let password : string = 'Khoadz26'
 
