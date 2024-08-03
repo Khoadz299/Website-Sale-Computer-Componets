@@ -1,5 +1,6 @@
 import { Request, Response, Router } from 'express';
 import Product_STORAGE from '../../models/products/product_storage';
+import PRODUCTS from '../../models/products';
 
 const Product_STORAGE_Route = Router();
 
@@ -8,16 +9,15 @@ Product_STORAGE_Route.route('/')
   try {
     // http://localhost:3000/product-monitor?limit=12&page=2
 
-    const page   : number = parseInt(req.query.page as string) || 1;
-    const limit  : number  = parseInt(req.query.limit as string) || 12;
-    const offset : number  = (page - 1) * limit;
+    const page: number = parseInt(req.query.page as string) || 1;
+    const limit: number = parseInt(req.query.limit as string) || 12;
+    const countProducts : number = await Product_STORAGE.count();
+    // số sản phẩm nhỏ hơn offset thì offset = 0 
+    const offset : number = countProducts - (limit * page) < 0 ? 0 : countProducts - (limit * page);
     
     const products_STORAGE : Product_STORAGE[] = await Product_STORAGE.findAll({
       limit: limit,
-      offset: offset,
-      order : [
-        ['id' , 'ASC']
-     ]
+      offset: offset
     });
 
     res.json(products_STORAGE);
@@ -29,11 +29,14 @@ Product_STORAGE_Route.route('/')
 
 .post( async (req: Request, res: Response) => {
   try {
-    let ID_Max : number = await Product_STORAGE.max('id') ;
-    let ID_New = ID_Max + 1;
-    const { name , brand , type , capacity , quantity , price } = req.body;
-    const newProductSTORAGE = await Product_STORAGE.create({ ID_New, name , brand , type , capacity , quantity , price });
-
+    const RequestInfoSTORAGE = req.body;
+    const countProducts = await Product_STORAGE.count();
+    let ID_New : string = `STORAGE-${countProducts + 1 }`
+   
+    //    newProductOverall
+    await PRODUCTS.create({ product_id : ID_New, product_type : 'STORAGE'}); 
+    const newProductSTORAGE = await Product_STORAGE.create({ id : ID_New,  ...RequestInfoSTORAGE});
+    
     res.status(201).json(newProductSTORAGE);
   } catch (error) {
     console.error(error);
@@ -46,7 +49,7 @@ Product_STORAGE_Route
     .get( async (req: Request, res: Response) => {
     const storage_id: string = req.params.id;  
     try {
-        const STORAGE = await Product_STORAGE.findByPk(req.params.id);
+        const STORAGE = await Product_STORAGE.findByPk(storage_id);
 
         if (!STORAGE) {
             return res.status(404).json({ message: `Product STORAGE not found with id: ${storage_id}` });
@@ -59,23 +62,22 @@ Product_STORAGE_Route
         }
     })
 
-// Cập nhật thông tin một tài khoản theo ID
+
 .put( async (req: Request, res: Response) => {
   try {
     const storage_id: string = req.params.id;
-    const { name , brand , type , capacity , quantity , price } = req.body;
-    const STORAGE = await Product_STORAGE.findByPk(Number(storage_id));
-
+    const RequestInfoSTORAGE = req.body;
+    const STORAGE = await Product_STORAGE.findByPk(storage_id);
     if (!STORAGE) {
       return res.status(404).json({ message: `Product STORAGE not found with id: ${storage_id}` });
     }
 
-    STORAGE.name = name           || STORAGE.name;
-    STORAGE.brand = brand         || STORAGE.brand;
-    STORAGE.type = type           || STORAGE.type;
-    STORAGE.capacity = capacity   || STORAGE.capacity;
-    STORAGE.quantity = quantity   || STORAGE.quantity;
-    STORAGE.price = price         || STORAGE.price;
+    STORAGE.name = RequestInfoSTORAGE.name           || STORAGE.name;
+    STORAGE.brand = RequestInfoSTORAGE.brand         || STORAGE.brand;
+    STORAGE.type = RequestInfoSTORAGE.type           || STORAGE.type;
+    STORAGE.capacity = RequestInfoSTORAGE.capacity   || STORAGE.capacity;
+    STORAGE.quantity = RequestInfoSTORAGE.quantity   || STORAGE.quantity;
+    STORAGE.price = RequestInfoSTORAGE.price         || STORAGE.price;
 
     await STORAGE.save();
     res.json(STORAGE);

@@ -1,5 +1,6 @@
 import { Request, Response, Router } from 'express';
 import Product_RAM from '../../models/products/product_ram';
+import PRODUCTS from '../../models/products';
 
 const Product_RAM_Route = Router();
 
@@ -8,16 +9,15 @@ Product_RAM_Route.route('/')
   try {
     // http://localhost:6060/ram?limit=1&offset=1&page=2
 
-    const page   : number = parseInt(req.query.page as string) || 1;
-    const limit  : number  = parseInt(req.query.limit as string) || 12;
-    const offset : number  = (page - 1) * limit;
+    const page: number = parseInt(req.query.page as string) || 1;
+    const limit: number = parseInt(req.query.limit as string) || 12;
+    const countProducts : number = await Product_RAM.count();
+    // số sản phẩm nhỏ hơn offset thì offset = 0 
+    const offset : number = countProducts - (limit * page) < 0 ? 0 : countProducts - (limit * page);
     
     const products_RAM : Product_RAM[] = await Product_RAM.findAll({
       limit: limit,
-      offset: offset,
-      order : [
-         ['id' , 'ASC']
-      ]
+      offset: offset
     });
 
     res.json(products_RAM);
@@ -29,10 +29,13 @@ Product_RAM_Route.route('/')
 
 .post( async (req: Request, res: Response) => {
   try {
-    let ID_Max : number = await Product_RAM.max('id') ;
-    let ID_New = ID_Max + 1;
-    const { name , brand , capacity , bus_speed , model , quantity, price } = req.body;
-    const newProductRAM = await Product_RAM.create({ ID_New,  name , brand , capacity , bus_speed , model , quantity, price });
+    const RequestInfoRAM = req.body;
+    const countProducts = await Product_RAM.count();
+    let ID_New : string = `RAM-${countProducts + 1 }`
+   
+    //    newProductOverall
+    await PRODUCTS.create({ product_id : ID_New, product_type : 'RAM'}); 
+    const newProductRAM = await Product_RAM.create({ id : ID_New,  ...RequestInfoRAM});
 
     res.status(201).json(newProductRAM);
   } catch (error) {
@@ -47,7 +50,7 @@ Product_RAM_Route
     .get( async (req: Request, res: Response) => {
     const ram_id: string = req.params.id;
     try {
-        const RAM = await Product_RAM.findByPk(req.params.id);
+        const RAM = await Product_RAM.findByPk(ram_id);
 
         if (!RAM) {
             return res.status(404).json({ message: `Product RAM not found with id: ${ram_id}` });
@@ -62,20 +65,21 @@ Product_RAM_Route
 
 .put( async (req: Request, res: Response) => {
   try {
-    const { name , brand , capacity , bus_speed , model , quantity, price } = req.body;
-    const RAM = await Product_RAM.findByPk(req.params.id);
+    const ram_id: string = req.params.id;
+    const RequestInfoRAM = req.body;
+    const RAM = await Product_RAM.findByPk(ram_id);
 
     if (!RAM) {
       return res.status(404).json({ message: 'RAM not found' });
     }
 
-    RAM.name = name             || RAM.name;
-    RAM.brand = brand           || RAM.brand;
-    RAM.capacity = capacity     || RAM.capacity;
-    RAM.bus_speed = bus_speed   || RAM.bus_speed;
-    RAM.model = model           || RAM.model;
-    RAM.quantity = quantity     || RAM.quantity;
-    RAM.price = price           || RAM.price;
+    RAM.name = RequestInfoRAM.name             || RAM.name;
+    RAM.brand = RequestInfoRAM.brand           || RAM.brand;
+    RAM.capacity = RequestInfoRAM.capacity     || RAM.capacity;
+    RAM.bus_speed = RequestInfoRAM.bus_speed   || RAM.bus_speed;
+    RAM.model = RequestInfoRAM.model           || RAM.model;
+    RAM.quantity = RequestInfoRAM.quantity     || RAM.quantity;
+    RAM.price = RequestInfoRAM.price           || RAM.price;
 
     await RAM.save();
     res.json(RAM);

@@ -1,22 +1,23 @@
 import { Request, Response, Router } from 'express';
 import Product_PSU from '../../models/products/product_psu';
+import PRODUCTS from '../../models/products';
 
 const Product_PSU_Route = Router();
 
 Product_PSU_Route.route('/')
   .get(async (req: Request, res: Response) => {
     try {
-      // http://localhost:6060/product-psu?limit=12&offset=1&page=2
+      // http://localhost:6060/product-psu?limit=12&page=2
+
       const page: number = parseInt(req.query.page as string) || 1;
       const limit: number = parseInt(req.query.limit as string) || 12;
-      const offset: number = (page - 1) * limit;
-
+      const countProducts : number = await Product_PSU.count();
+      // số sản phẩm nhỏ hơn offset thì offset = 0 
+      const offset : number = countProducts - (limit * page) < 0 ? 0 : countProducts - (limit * page);
+      
       const products_PSU: Product_PSU[] = await Product_PSU.findAll({
         limit: limit,
-        offset: offset,
-        order : [
-          ['id' , 'ASC']
-       ]
+        offset: offset
       });
 
       res.json(products_PSU);
@@ -27,10 +28,13 @@ Product_PSU_Route.route('/')
   })
   .post(async (req: Request, res: Response) => {
     try {
-      let ID_Max : number = await Product_PSU.max('id') ;
-      let ID_New = ID_Max + 1;
-      const { name, standard, power, quantity, price } = req.body;
-      const newProductPSU = await Product_PSU.create({ ID_New, name, standard, power, quantity, price });
+      const RequestInfoPSU = req.body;
+      const countProducts = await Product_PSU.count();
+      let ID_New : string = `PSU-${countProducts + 1 }`
+
+      //    newProductOverall
+      await PRODUCTS.create({ product_id : ID_New, product_type : 'PSU'});
+      const newProductPSU = await Product_PSU.create({ id : ID_New, ...RequestInfoPSU });
 
       res.status(201).json(newProductPSU);
     } catch (error) {
@@ -57,18 +61,19 @@ Product_PSU_Route.route('/:id')
   })
   .put(async (req: Request, res: Response) => {
     try {
-      const { name, standard, power, quantity, price }  = req.body;
+      const RequestInfoPSU  = req.body;
       const PSU = await Product_PSU.findByPk(req.params.id);
 
       if (!PSU) {
         return res.status(404).json({ message: 'Product PSU not found' });
       }
 
-      PSU.name = name          ||   PSU.name;
-      PSU.brand = standard     ||   PSU.brand;
-      PSU.power = power        ||   PSU.power;
-      PSU.quantity = quantity  ||   PSU.quantity;
-      PSU.price = price        ||   PSU.price;
+      PSU.name = RequestInfoPSU.name          ||   PSU.name;
+      PSU.brand = RequestInfoPSU.brand        ||   PSU.brand;
+      PSU.standard = RequestInfoPSU.standard  ||   PSU.standard;
+      PSU.power = RequestInfoPSU.power        ||   PSU.power;
+      PSU.quantity = RequestInfoPSU.quantity  ||   PSU.quantity;
+      PSU.price = RequestInfoPSU.price        ||   PSU.price;
 
       await PSU.save();
       res.json(PSU);
