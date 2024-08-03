@@ -1,10 +1,10 @@
 INSERT INTO Bill_Detail 
 VALUES 
--- id , bill_info_id , product_id , product_type , quantity , price
-(1, 1 , 1 , 'CPU' , 1 , 3500000 ),
-(2, 1 , 1 , 'VGA' , 1 , 57800000 ),
-(3, 1 , 11 , 'VGA' , 2 , 25700000 ),
-(4, 1 , 20 , 'MONITOR' , 1 , 24990000 ),
-(5, 2 , 16 , 'STORAGE' , 4 , 3500000 ),
-(6, 3 , 13 , 'RAM' , 1 , 9900000 ),
-(7, 4 , 9 , 'PSU' , 1 , 9120000 )
+-- id , bill_info_id , product_id  , quantity , price
+(1, 1 , 'CPU-1' ,  1 , 3500000 ),
+(2, 1 ,  'VGA-2' , 1  , 52800000 ),
+(3, 1 , 'PSU-5', 1 , 25700000 ),
+(4, 1 ,'VGA-20' ,  2 , 21300000 ),
+(5, 2 , 'MONITOR-16' ,  4 , 6650000 ),
+(6, 3 , 'RAM-5' ,  1 , 3650000 ),
+(7, 4 , 'STORAGE-7' , 1 , 7499000 )
