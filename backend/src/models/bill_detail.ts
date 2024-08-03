@@ -1,48 +1,52 @@
 import { Model, DataTypes } from 'sequelize';
 import configDB from '../../database/config';
+
 const sequelize = configDB;
 
 export default class BillDetail extends Model {
-  declare id: number;
-  declare bill_info_id: number;
-  declare product_id: string;
-  declare quantity: number;
-  declare price: number;
+  public id!: number;
+  public bill_info_id!: number;
+  public product_id!: string;
+  public quantity!: number;
+  public price!: number;
 }
 
-BillDetail.init(
-  {
-    id: {
+BillDetail.init({
+  id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      primaryKey: true,
-    },
-    bill_info_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    product_id: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-    },
-    quantity: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      validate: {
-        min: 1,
-      },
-    },
-    price: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      validate: {
-        min: 0,
-      },
-    },
+      primaryKey: true
   },
-  {
-    tableName: 'bill_detail',
-    sequelize, // passing the `sequelize` instance is required
-    timestamps: false,
+  bill_info_id: {
+      type: DataTypes.INTEGER,
+      references: {
+          model: 'Bill_Info',
+          key: 'id'
+      }
+  },
+  product_id: {
+      type: DataTypes.STRING(50),
+      references: {
+          model: 'Products',
+          key: 'product_id'
+      }
+  },
+  quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+          min: 1
+      }
+  },
+  price: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+          min: 0
+      }
   }
-);
+}, {
+  sequelize,
+  tableName: 'Bill_Detail',
+  timestamps: false
+});

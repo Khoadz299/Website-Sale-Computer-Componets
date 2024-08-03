@@ -1,35 +1,44 @@
 import { Model, DataTypes } from 'sequelize';
-import configDB  from '../../database/config' 
-const sequelize = configDB
+import configDB from '../../database/config';
+import Account from './account';
+
+
+const sequelize = configDB;
 
 export default class Cart extends Model {
-  declare account_id: number;
-  declare product_id: string;
-  declare quantity: number;
+  public account_id!: number;
+  public product_id!: string;
+  public quantity!: number;
 }
 
-Cart.init(
-  {
-    account_id: {
-      type: DataTypes.INTEGER,
-      allowNull : false,
+Cart.init({
+  account_id: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'Account',
+      key: 'id'
     },
-    product_id: {
-      type: new DataTypes.STRING(50),
-      allowNull: false,
-    },
-    quantity: {
-        type: new DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue : 1,
-        validate: {
-            min : 1,
-        },
-    },
+    onDelete: 'CASCADE'
   },
-  {
-    tableName: 'cart',
-    sequelize, // passing the `sequelize` instance is required
-    timestamps : false
+  product_id: {
+    type: DataTypes.STRING(50),
+    references: {
+      model: 'Products',
+      key: 'product_id'
+    },
+    onDelete: 'CASCADE'
   },
-);
+  quantity: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    validate: {
+      min: 1
+    }
+  }
+}, {
+  sequelize,
+  modelName: 'Cart',
+  tableName: 'Cart',
+  timestamps: false
+});
+

@@ -58,4 +58,3 @@ Product_VGA.init(
   },
 );
 
-
