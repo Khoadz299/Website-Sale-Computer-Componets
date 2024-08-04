@@ -1,6 +1,7 @@
 import { Request, Response, Router } from 'express';
 import BillDetail from '../models/bill_detail';
 
+
 const BillDetail_Route = Router();
 
 BillDetail_Route
@@ -9,21 +10,42 @@ BillDetail_Route
     try {
       let ID_Max : number = await BillDetail.max('id')
       const ListInfoProductInBill : BillDetail[] = req.body;
-
+      console.log(ListInfoProductInBill);
       ListInfoProductInBill.map(async product =>{
-         ID_Max = ID_Max + 1;
-         await BillDetail.create({ ID_Max , ...product });
+        
+        ID_Max = ID_Max + 1;
+        console.log({ ID_Max , ...product });
+        // do cái product nó có id đã khai báo thì không truyền vào theo ({ id : ID_New, ...product });
+        // sẽ bị lỗi , do cái id : ID new khai báo nhiều hơn 1 lần
+        product.id = ID_Max;
+        const newBillDetail = await BillDetail.create({ ...product });
+
+         console.log(newBillDetail);
       })
       res.status(201).json(ListInfoProductInBill);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Error creating new Bill Detail' });
     }
-  });
-
-  BillDetail_Route.route('/:id')
+  })
   .get(async (req: Request, res: Response) => {
-    const IDRequestBillInfo: string = req.params.id;
+    try {
+      const ListProductInBillDetail = await BillDetail.findAll({
+      });
+
+      if (!ListProductInBillDetail) {
+        return res.status(404).json({ message: `Bill Detail not found with ` });
+      }
+
+      res.json(ListProductInBillDetail);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: `Not found bill detail with id` });
+    }
+  })
+  BillDetail_Route.route('/:id_bill')
+  .get(async (req: Request, res: Response) => {
+    const IDRequestBillInfo: string = req.params.id_bill;
     try {
       const ListProductInBillDetail = await BillDetail.findAll({
         where : {
@@ -41,19 +63,20 @@ BillDetail_Route
       res.status(500).json({ message: `Not found bill detail with id: ${IDRequestBillInfo}` });
     }
   })
+  // NOT USE
   .put(async (req: Request, res: Response) => {
     try {
-      const { bill_info_id , product_id , product_type , quantity , price } = req.body;
+      const RequestInfoBillDetail = req.body;
       const billDetail = await BillDetail.findByPk(req.params.id);
 
       if (!billDetail) {
         return res.status(404).json({ message: 'Bill detail not found' });
       }
 
-      billDetail.bill_info_id = bill_info_id     || billDetail.bill_info_id;
-      billDetail.product_id = product_id         || billDetail.product_id;
-      billDetail.quantity = quantity             || billDetail.quantity;
-      billDetail.price = price                   || billDetail.price;
+      billDetail.bill_info_id = RequestInfoBillDetail.bill_info_id     || billDetail.bill_info_id;
+      billDetail.product_id = RequestInfoBillDetail.product_id         || billDetail.product_id;
+      billDetail.quantity = RequestInfoBillDetail.quantity             || billDetail.quantity;
+      billDetail.price = RequestInfoBillDetail.price                   || billDetail.price;
 
       await billDetail.save();
       res.json(billDetail);

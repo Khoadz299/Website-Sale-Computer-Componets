@@ -6,7 +6,7 @@ const BillInfo_Route = Router();
 BillInfo_Route.route('/')
   .get(async (req: Request, res: Response) => {
     try {
-      // http://localhost:6060/product-cpu?limit=12&offset=1&page=2
+
       const page: number = parseInt(req.query.page as string) || 1;
       const limit: number = parseInt(req.query.limit as string) || 12;
       const offset: number = (page - 1) * limit;
@@ -28,7 +28,9 @@ BillInfo_Route.route('/')
   .post(async (req: Request, res: Response) => {
     try {
       const RequestInfoBill = req.body;
-      const newBillInfo = await BillInfo.create({ ...RequestInfoBill });
+      let ID_Max : number = await BillInfo.max('id')
+      let ID_New : number = ID_Max + 1 ;
+      const newBillInfo = await BillInfo.create({ id : ID_New  , ...RequestInfoBill });
 
       res.status(201).json(newBillInfo);
     } catch (error) {
@@ -55,21 +57,21 @@ BillInfo_Route.route('/:id')
   })
   .put(async (req: Request, res: Response) => {
     try {
-      const { account_id , phone_number , email , address , invoice_date , total_money , status , note } = req.body;
+      const RequestInfoBill = req.body;
       const billInfo = await BillInfo.findByPk(req.params.id);
 
       if (!billInfo) {
         return res.status(404).json({ message: 'Bill Info not found' });
       }
 
-      billInfo.account_id = account_id             || billInfo.account_id;
-      billInfo.phone_number = phone_number         || billInfo.phone_number;
-      billInfo.email = email                       || billInfo.email;
-      billInfo.address = address                   || billInfo.address;
-      billInfo.invoice_date = invoice_date         || billInfo.invoice_date;
-      billInfo.total_money = total_money           || billInfo.total_money;
-      billInfo.status = status                     || billInfo.status;
-      billInfo.note = note                         || billInfo.note;
+      billInfo.account_id = RequestInfoBill.account_id             || billInfo.account_id;
+      billInfo.phone_number = RequestInfoBill.phone_number         || billInfo.phone_number;
+      billInfo.email = RequestInfoBill.email                       || billInfo.email;
+      billInfo.address = RequestInfoBill.address                   || billInfo.address;
+      billInfo.invoice_date = RequestInfoBill.invoice_date         || billInfo.invoice_date;
+      billInfo.total_money = RequestInfoBill.total_money           || billInfo.total_money;
+      billInfo.status = RequestInfoBill.status                     || billInfo.status;
+      billInfo.note = RequestInfoBill.note                         || billInfo.note;
 
       await billInfo.save();
       res.json(billInfo);

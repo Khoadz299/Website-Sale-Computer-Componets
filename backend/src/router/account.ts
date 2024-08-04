@@ -6,7 +6,7 @@ const Account_Route = Router();
 Account_Route.route('/')
 .get(async (req: Request, res: Response) => {
   try {
-    // http://localhost:3000/accounts?limit=1&offset=1&page=2
+    // http://localhost:6060/accounts?limit=1&page=2
 
     const page   : number = parseInt(req.query.page as string) || 1;
     const limit  : number  = parseInt(req.query.limit as string) || 10;
@@ -29,8 +29,9 @@ Account_Route.route('/')
 Account_Route.route('/register')
   .post( async (req: Request, res: Response) => {
     try {
-      const { id, username, password, role } = req.body;
-      const newAccount = await Account.create({ id,  username, password, role });
+      const RequestInfoAccount = req.body;
+      const IDNew : number = Number(await Account.count()) + 1; 
+      const newAccount = await Account.create({ id: IDNew , ...RequestInfoAccount });
 
       res.status(201).json(newAccount);
     } catch (error) {
@@ -39,16 +40,20 @@ Account_Route.route('/register')
     }
   })
 
-Account_Route.route('/login')
+Account_Route.route('/check-login')
   .post( async (req: Request, res: Response) => {
     try {
-      const { id, username, password, role } = req.body;
-      const newAccount = await Account.create({ id,  username, password, role });
-
-      res.status(201).json(newAccount);
+      const RequestInfoAccount = req.body;
+      const account = await Account.findOne({ where: { username : RequestInfoAccount.username } });
+      if(account){
+        res.status(201).json(account.role);
+      }
+      else{
+        res.status(201).json('Not exits username in database');
+      }
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Error creating account' });
+      res.status(500).json({ message: 'Error login account' });
     }
   })
 
@@ -73,15 +78,15 @@ Account_Route
   // Cập nhật thông tin một tài khoản theo ID
   .put( async (req: Request, res: Response) => {
     try {
-      const { password, role } = req.body;
+      const ResquestInfoAccount = req.body;
       const account = await Account.findByPk(req.params.id);
 
       if (!account) {
         return res.status(404).json({ message: 'Account not found' });
       }
       account.username 
-      account.password = password || account.password ;
-      account.role = role         || account.role ;
+      account.password = ResquestInfoAccount.password || account.password ;
+      account.role = ResquestInfoAccount.role         || account.role ;
 
       await account.save();
       res.json(account);
