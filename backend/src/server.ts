@@ -8,7 +8,7 @@ import Account_Route from './router/account';
 
 import BillInfo_Route from "./router/bill_info";
 import BillDetail_Route from "./router/bill_detail";
-
+import Cart_Router from "./router/cart";
 import List_Image_Product_Route from './router/list_image_product';
 
 import Product_CPU_Route from './router/products/product_cpu';
@@ -17,6 +17,7 @@ import Product_PSU_Route from './router/products/product_psu';
 import Product_MONITOR_Route from './router/products/product_monitor';
 import Product_RAM_Route from './router/products/product_ram';
 import Product_STORAGE_Route from './router/products//product_storage';
+
 
 // Load data variable from file .evn
 dotenv.config();
@@ -34,8 +35,10 @@ app.use(rateLimiter);
 app.use(bodyParser.json());
 
 // Sử dụng router cho các route
-app.use('/account', Account_Route);
+app.use('/accounts', Account_Route);
+app.use('/cart', Cart_Router);
 app.use('/bill-info', BillInfo_Route);
+app.use('/bill-detail', BillDetail_Route);
 
 // List Image Router
 app.use('/list-image-product',  List_Image_Product_Route);
@@ -49,7 +52,6 @@ app.use('/product-monitor',     Product_MONITOR_Route);
 app.use('/product-ram',         Product_RAM_Route);
 app.use('/product-storage',     Product_STORAGE_Route);
 
-app.use('/bill-detail', BillDetail_Route);
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
