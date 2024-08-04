@@ -63,7 +63,7 @@ BillInfo.init({
   }
 }, {
   sequelize,
-  modelName: 'Bill_Info',
+  tableName: 'bill_info',
   timestamps: false
 });
 

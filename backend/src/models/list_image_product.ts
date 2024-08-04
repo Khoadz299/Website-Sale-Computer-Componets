@@ -30,7 +30,7 @@ List_Image_Product.init({
   }
 }, {
   sequelize,
-  tableName: 'List_Image_Product',
+  tableName: 'list_image_product',
   timestamps: false,
   indexes: [
       {

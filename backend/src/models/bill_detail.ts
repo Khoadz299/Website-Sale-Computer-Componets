@@ -20,7 +20,7 @@ BillDetail.init({
   bill_info_id: {
       type: DataTypes.INTEGER,
       references: {
-          model: 'Bill_Info',
+          model: 'bill_info',
           key: 'id'
       }
   },
@@ -47,6 +47,6 @@ BillDetail.init({
   }
 }, {
   sequelize,
-  tableName: 'Bill_Detail',
+  tableName: 'bill_detail',
   timestamps: false
 });
