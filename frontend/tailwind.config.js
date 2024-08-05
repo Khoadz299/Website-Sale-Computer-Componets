@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-export const content = ["./src/*.tsx"];
+export const content = [ "./index.html","./src/**/*.tsx"];  // các nơi mà taildwindcss sẽ có tác dụng
 export const theme = {
   extend: {},
 };
