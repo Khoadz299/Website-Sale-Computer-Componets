@@ -1,48 +1,28 @@
-import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import Home from "./pages/Home";
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-function App() {
-  const [count, setCount] = useState(0);
-  // const [data, setData] = useState("");
+import ProductCPU from "./pages/ProductCPU";
+import ProductMONITOR from "./pages/ProductMONITOR";
+import ProductRAM from "./pages/ProductRAM";
+import ProductSTORAGE from "./pages/ProductSTORAGE";
+import ProductPSU from "./pages/ProductPSU";
+import ProductVGA from "./pages/ProductVGA";
 
-  useEffect(() => {
-    fetch("https://reqres.in/api/users?page=2")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data); // Log dữ liệu fetch về
-        //setData(data); // Lưu dữ liệu vào state
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
+export default function App() {
   return (
-    <>
+    <Router>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/product/cpu" element={<ProductCPU />} />
+          <Route path="/product/monitor" element={<ProductMONITOR />} />
+          <Route path="/product/ram" element={<ProductRAM />} />
+          <Route path="/product/storage" element={<ProductSTORAGE />} />
+          <Route path="/product/psu" element={<ProductPSU />} />
+          <Route path="/product/vga" element={<ProductVGA />} />
+        </Routes>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs text-red-500">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </Router>
   );
 }
-
-export default App;
