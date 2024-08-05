@@ -55,7 +55,7 @@ List_Image_Product_Route  // lấy ảnh các sản phẩm theo loại và hiể
             ],
             where: {
                 product_type: IDRequestProductType,
-            },
+            },   
         });
         const arrIDProduct= listIDProduct.map((product) => product.product_id);
         

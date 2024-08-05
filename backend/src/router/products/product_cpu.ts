@@ -16,8 +16,8 @@ Product_CPU_Route.route('/')
       const offset : number = countProducts - (limit * page) < 0 ? 0 : countProducts - (limit * page);
       
       const products_CPU: Product_CPU[] = await Product_CPU.findAll({
-        limit: limit,
-        offset: offset,
+        // limit: limit,
+        // offset: offset,
       });
 
       res.json(products_CPU);

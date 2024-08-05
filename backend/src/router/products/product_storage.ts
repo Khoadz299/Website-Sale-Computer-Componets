@@ -16,8 +16,8 @@ Product_STORAGE_Route.route('/')
     const offset : number = countProducts - (limit * page) < 0 ? 0 : countProducts - (limit * page);
     
     const products_STORAGE : Product_STORAGE[] = await Product_STORAGE.findAll({
-      limit: limit,
-      offset: offset
+      // limit: limit,
+      // offset: offset
     });
 
     res.json(products_STORAGE);

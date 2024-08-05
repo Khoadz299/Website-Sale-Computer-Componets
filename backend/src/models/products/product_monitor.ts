@@ -14,7 +14,6 @@ export default class Product_MONITOR extends Model {
   declare quantity: number;
   declare price: number;
 }
-
 Product_MONITOR.init(
   {
     id: {

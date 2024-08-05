@@ -17,8 +17,8 @@ Product_VGA_Route
       const offset : number = countProducts - (limit * page) < 0 ? 0 : countProducts - (limit * page);
     
       const products_VGA : Product_VGA[] = await Product_VGA.findAll({
-        limit: limit,
-        offset: offset,
+        // limit: limit,
+        // offset: offset,
       });
 
       res.json(products_VGA);

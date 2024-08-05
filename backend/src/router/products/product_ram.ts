@@ -16,8 +16,8 @@ Product_RAM_Route.route('/')
     const offset : number = countProducts - (limit * page) < 0 ? 0 : countProducts - (limit * page);
     
     const products_RAM : Product_RAM[] = await Product_RAM.findAll({
-      limit: limit,
-      offset: offset
+      // limit: limit,
+      // offset: offset
     });
 
     res.json(products_RAM);
